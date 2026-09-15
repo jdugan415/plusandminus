@@ -11,7 +11,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:plusandminus/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Counter increments, decrements, and resets', (
+    WidgetTester tester,
+  ) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
@@ -26,5 +28,26 @@ void main() {
     // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.remove));
+    await tester.pump();
+    expect(find.text('0'), findsOneWidget);
+
+    // The count represents button pushes, so it cannot fall below zero.
+    final decrementButton = tester.widget<FloatingActionButton>(
+      find.widgetWithIcon(FloatingActionButton, Icons.remove),
+    );
+    expect(decrementButton.onPressed, isNull);
+
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    expect(find.text('2'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.restart_alt));
+    await tester.pump();
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('2'), findsNothing);
   });
 }
