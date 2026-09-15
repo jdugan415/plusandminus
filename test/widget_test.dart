@@ -50,4 +50,16 @@ void main() {
     expect(find.text('0'), findsOneWidget);
     expect(find.text('2'), findsNothing);
   });
+  testWidgets('Three plus taps show 3', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+    expect(find.text('0'), findsOneWidget);
+
+    for (var tap = 0; tap < 3; tap++) {
+      await tester.tap(find.byIcon(Icons.add));
+      await tester.pump();
+    }
+
+    expect(find.text('3'), findsOneWidget);
+    expect(find.text('2'), findsNothing);
+  });
 }
